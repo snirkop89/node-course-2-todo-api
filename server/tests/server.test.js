@@ -122,7 +122,7 @@ describe('DELETE /todos:id', () => {
                 if (err) return done(err);
 
                 Todo.findById(hexId).then(todo => {
-                    expect(todo).toNotExist;
+                    expect(todo).toBeFalsy();
                     done();
                 }).catch(e => done(e))
             });
@@ -181,13 +181,10 @@ describe('PATCH /todos/:id', () => {
             .expect(res => {
                 expect(res.body.todo.text).toBe(body.text);
                 expect(res.body.todo.completed).toBe(body.completed);
-                expect(res.body.todo.completedAt).toBeTruthy();
+                expect(typeof res.body.todo.completedAt).toBe('number');
 
             })
             .end(done);
-        // 200
-        // verify that res.body.text = text, completed is true,
-        // completed at is a nuber tobea(number)
     });
 
     it('should NOT update the todo', done => {
@@ -204,9 +201,6 @@ describe('PATCH /todos/:id', () => {
             .send(body)
             .expect(404)
             .end(done);
-        // 200
-        // verify that res.body.text = text, completed is true,
-        // completed at is a nuber tobea(number)
     });
 
     it('should clear completedAt when todo is not completed', done => {
@@ -221,7 +215,7 @@ describe('PATCH /todos/:id', () => {
             .expect(res => {
                 expect(res.body.todo.text).toBe(body.text);
                 expect(res.body.todo.completed).toBe(body.completed);
-                expect(res.body.todo.completedAt).toNotExist;
+                expect(res.body.todo.completedAt).toBeFalsy();
             })
             .end(done);
     });
@@ -245,7 +239,7 @@ describe('GET /users/me', () => {
             .get('/users/me')
             .expect(401)
             .expect(res => {
-                expect(res.body).toNotBe;
+                expect(res.body).toEqual({});
             })
             .end(done);
     })
